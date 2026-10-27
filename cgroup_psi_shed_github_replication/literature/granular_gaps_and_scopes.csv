@@ -1,0 +1,26 @@
+citation_key,authors,venue_year,cluster,telemetry_granularity,memory_scope,lru_awareness,tail_model,overcommit_frontier,proactive_mitigation,key_limitation
+barham2003xen,"Barham et al.",SOSP/OSR 2003,Cluster A,Seconds,Host-Guest Static,None,Gaussian,Static Sizing,None,Ballooning driver latency stalls guest apps
+waldspurger2002esx,"Waldspurger",OSDI 2002,Cluster A,Seconds,Host-Guest Static,None,Mean Working Set,Static Share,Reactive Reclaim,High page remapping overhead during burst phase
+verma2015borg,"Verma et al.",EuroSys 2015,Cluster A,Minutes,Pod Memory Quota,None,Safety Margin,Static Ratio,Kill on Limit,Binary OOM killing causes cascading task restart storms
+tirmazi2020borg,"Tirmazi et al.",EuroSys 2020,Cluster A,Seconds-Minutes,Pod Quota,None,Empirical Peak,Static Margin,Reactive Evict,Does not isolate anon vs file-cache reclamation
+rzadca2020autopilot,"Rzadca et al.",EuroSys 2020,Cluster A,Minutes (Moving Avg),Container Limit,None,EWMA Window,Autoscale Limits,Windowed Scaling,Reaction lag of tens of seconds misses sub-second spikes
+weiner2022tmo,"Weiner et al.",ASPLOS 2022,Cluster B,10ms - 1s (PSI),Anon/File zswap,Active/Inactive,PSI Tail Empirical,Cost-Benefit Ratio,Swap Offloading,Targets cold swap offloading rather than direct reclaim tail stall prevention
+lagarcavilla2019far,"Lagar-Cavilla et al.",ASPLOS 2019,Cluster B,Milliseconds,Compressed Pool,None,P99 Latency,Disaggregated Pool,Remote Swap,Remote page-fault stalls violate microsecond interactive SLAs
+li2023pond,"Li et al.",ASPLOS 2023,Cluster B,Microsecond/HW,CXL Memory Tiers,Dual-Tier NUMA,Empirical Quantiles,Tier Placement,NUMA Migration,Hardware CXL latency penalty still degrades P99.9 memory access
+chen2019parties,"Chen et al.",ASPLOS 2019,Cluster C,100ms - 1s,Memory Bandwidth,None,Target Latency,Gradient Descent,Resource Partitioning,Coarse adjustment interval cannot intercept sub-10ms direct reclaim cascades
+dean2013tailatscale,"Dean & Barroso",CACM 2013,Cluster D,Request Milliseconds,Application Tail,None,Empirical P99.9,Redundant Requests,Hedging/Tying,Software hedging wastes cluster compute capacity
+pickands1975gpd,"Pickands",Ann. Statist. 1975,Cluster E,Theoretical Limit,Continuous Tail,N/A,GPD Pickands Limit,Asymptotic Bound,N/A,Pure mathematical theory without systems instrumentation
+balkema1974residual,"Balkema & de Haan",Ann. Probab. 1974,Cluster E,Theoretical Limit,Tail Residual,N/A,POT Asymptotics,Residual Exceedance,N/A,Theoretical formulation lacking finite-sample closed-form bounds
+coles2001evt,"Coles",Springer 2001,Cluster E,Statistical,Parametric Extreme,N/A,EVT / GPD / GEV,Quantile Iso-lines,N/A,Focuses on environmental and financial datasets without OS telemetry
+gunther2007usl,"Gunther",Springer 2007,Cluster E,System Second,Throughput/Scalability,None,Universal Scalability,Contention/Coherency,Capacity Planning,Cannot capture stochastic microsecond tail latency explosions
+lo2015heracles,"Lo et al.",ISCA 2015,Cluster C,Sub-second,LLC/BW Isolation,None,P95 Slack Time,Dynamic Allocation,Cat/Mem B/W Throttle,Relies on hardware CAT/MBA without Linux vmscan watermark control
+delimitrou2014quasar,"Delimitrou & Kozyrakis",ASPLOS 2014,Cluster C,Seconds,Classification,None,Supervised Classification,Collaborative Filter,Schedule Placement,Heuristic scheduling unaware of dynamic Linux 6.x cgroup v2 PSI
+gu2017infiniswap,"Gu et al.",NSDI 2017,Cluster B,Microsecond,Remote Paging,None,P99 Read/Write,RDMA Remote Ratio,Paging Eviction,Network paging storms under multi-tenant memory exhaustion
+ruan2020aifm,"Ruan et al.",OSDI 2020,Cluster B,Microsecond,User-Level Heap,App Runtime,Mean / P99 Latency,Remote Offload,Runtime Prefetch,Requires intrusive application code refactoring to use far pointers
+amaro2020far,"Amaro et al.",EuroSys 2020,Cluster B,Job Level,Remote Memory,None,Job Completion Time,Capacity Bounds,Far Memory Alloc,Does not address direct-reclaim spinlock stalls on host DRAM
+marinos2019caladan,"Fried et al.",OSDI 2020,Cluster C,10-100 Microseconds,Core / Memory Bandwidth,None,Empirical Queue,Microsecond Scaling,Cores / Mem Allocation,Microsecond scale focused on CPU cores rather than cgroup v2 memory watermarks
+cortez2017resourcecentral,"Cortez et al.",SOSP 2017,Cluster D,Minutes,VM Sizing,None,ML Classification,Oversubscription,Predictive Placement,Predictive VM placement does not solve instant runtime memory spikes
+cheng2018alibaba,"Cheng et al.",APSys 2018,Cluster D,Seconds,Batch / Service Mix,None,Empirical Utilization,Workload Colocation,Colocation Heuristic,Trace analysis study without closed-loop mitigation mechanism
+page2021prisma,"Page et al.",BMJ 2021,Cluster E,Methodological,Evidence Synthesis,N/A,Reporting Guideline,Search Protocol,N/A,Systematic review reporting standard for evidence-based methodology
+liu2021hpc,"Liu & Guitart",J. Supercomput. 2021,Cluster E,Seconds,HPC Container,Dual-LRU,Empirical Average,Allocation Scheme,Static Co-location,Lacks kernel MGLRU integration and PSI acceleration kinetics
+bregar2024cluster,"Bregar & Juric",Cluster Comput. 2024,Cluster E,Seconds,Kubernetes Pods,Container LRU,P99 Response,Adaptive Threshold,Adaptive Scheduling,Uses edge-cloud heuristics without closed-form EVT safety frontiers

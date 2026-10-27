@@ -1,0 +1,34 @@
+\begin{table*}[t]
+\centering
+\caption{Systematic Comparative Taxonomy of State-of-the-Art Datacenter and Cloud Memory Management Frameworks Across Seven Architectural and Analytical Dimensions.}
+\label{tab:taxonomy}
+\begin{adjustbox}{width=\textwidth}
+\begin{tabular}{lccccccp{3.8cm}}
+\toprule
+\textbf{System / Architecture} & \textbf{Telemetry} & \textbf{Memory Scope} & \textbf{LRU Policy} & \textbf{PMU} & \textbf{Tail Model} & \textbf{Closed Frontier} & \textbf{Control Mechanism /} \\
+\textbf{\& Primary Citation} & \textbf{Granularity} & \textbf{(Anon vs. File)} & \textbf{Awareness} & \textbf{Profiling} & \textbf{Formulation} & $\mathbf{\Omega^*(\alpha, L_{\text{SLA}})}$ & \textbf{Mitigation Strategy} \\
+\midrule
+VMware ESX \cite{waldspurger2002esx} & Seconds & Coarse VM Pages & None & \xmark & Mean Footprint & \xmark & Ballooning \& Content Sharing \\
+Google Borg \cite{verma2015borg,tirmazi2020borg} & Minutes & Container RSS & None & \xmark & Empirical Peak & \xmark & Hard OOM-Kill \& Eviction \\
+Google Autopilot \cite{rzadca2020autopilot} & Minutes & Moving Window & None & \xmark & EWMA Quantile & \xmark & Vertical Task Resizing \\
+Quasar \cite{delimitrou2014quasar} & Seconds & Aggregate Memory & None & \cmark & Supervised ML & \xmark & Workload Classification \\
+Heracles \cite{lo2015heracles} & Sub-second & LLC \& Memory BW & None & \cmark & P95 Slack Time & \xmark & Hardware CAT \& MBA Throttling \\
+PARTIES \cite{chen2019parties} & $100\text{ ms} - 1\text{ s}$ & Aggregate Memory & None & \cmark & Target SLA & \xmark & Feedback Resource Partitioning \\
+Infiniswap \cite{gu2017infiniswap} & Microseconds & Page Evictions & None & \xmark & P99 Access & \xmark & RDMA Remote Paging \\
+AIFM \cite{ruan2020aifm} & Microseconds & Application Heap & Runtime & \xmark & Mean / P99 & \xmark & Far-Pointer Prefetching \\
+Caladan \cite{marinos2019caladan} & $10-100\ \mu\text{s}$ & Cores \& Mem BW & None & \cmark & Empirical Queue & \xmark & Dynamic Core Reallocation \\
+Meta TMO \cite{weiner2022tmo} & $10\text{ ms} - 1\text{ s}$ & Anon \& File zswap & Active/Inactive & \xmark & PSI Tail & \xmark & Cost-Benefit Compressed Swap \\
+Far Memory \cite{lagarcavilla2019far,amaro2020far} & Milliseconds & Remote Swapping & None & \xmark & P99 Latency & \xmark & Software Far-Memory Pool \\
+CXL Pond \cite{li2023pond} & Microseconds & Multi-Tier NUMA & Dual-Tier & \cmark & Empirical Quantile & \xmark & Dynamic CXL Pooling \\
+Liu \& Guitart \cite{liu2021hpc} & Seconds & Container RSS & Dual-LRU & \xmark & Empirical Mean & \xmark & Static Allocation Heuristic \\
+Bregar \& Juri\v{c} \cite{bregar2024cluster} & Seconds & Kubernetes Pods & Dual-LRU & \xmark & P99 Response & \xmark & Adaptive Scheduling Feedback \\
+\midrule
+\textbf{PSI-Shed (This Work)} & $\mathbf{\le 10\text{ ms}}$ & \textbf{Anon + File Cache} & \textbf{MGLRU Gen.} & \cmark & \textbf{EVT / GPD Tail} & \cmark & \textbf{PDA Closed-Loop Controller} \\
+ & \textbf{(epoll PSI)} & \textbf{+ Slab Separation} & \textbf{Multi-Tier} & & \textbf{(Pickands-POT)} & \textbf{(Analytical)} & \textbf{+ Dynamic Cgroup v2 AIMD} \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\begin{tablenotes}
+\item \footnotesize{\textit{Note:} \cmark indicates explicit architectural support or formal derivation; \xmark indicates absence or lack of support. LRU Policy Awareness denotes distinction between legacy Linux Active/Inactive Dual-LRU lists and Linux 6.x Multi-Generational LRU (MGLRU). Closed Frontier denotes closed-form analytical inversion for safe overcommit capacity under strict percentile latency constraints.}
+\end{tablenotes}
+\end{table*}

@@ -1,0 +1,23 @@
+\begin{table}[t]
+\centering
+\caption{Two-Way Parametric ANOVA for Log-Transformed Memory Allocation Latency $\ln(T_{\text{alloc}})$ Across Overcommit Ratio $\Omega$ and Kernel LRU Mode (Dual-LRU vs. MGLRU).}
+\label{tab:anova}
+\footnotesize
+\begin{adjustbox}{width=\linewidth}
+\begin{tabular}{lrrrrcc}
+\toprule
+\textbf{Variation Source} & \textbf{Sum of Sq.} & \textbf{df} & \textbf{Mean Sq.} & $\mathbf{F}$\textbf{-Ratio} & $\mathbf{p}$\textbf{-Value} & $\mathbf{\eta_p^2}$ \\
+\midrule
+Overcommit Ratio ($\Omega$) & 424.6 & 6 & 70.8 & 58.28 & $< 10^{-15}$ & 0.0083 \\
+LRU Mode (MGLRU vs. Dual) & 39.8 & 1 & 39.8 & 32.78 & $1.04 \times 10^{-8}$ & 0.0008 \\
+Interaction ($\Omega \times$ LRU) & 31.0 & 6 & 5.2 & 4.25 & $2.77 \times 10^{-4}$ & 0.0006 \\
+Residual (Error) & 50,980.2 & 41986 & 1.214 & -- & -- & -- \\
+\midrule
+Total Model & 51,475.6 & 41999 & -- & -- & -- & -- \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\begin{tablenotes}
+\item \footnotesize{\textit{Note:} Residual degrees of freedom $df = 41,986$. Exact $p$-values: $\Omega$ achieves $p = 3.67 \times 10^{-72} (< 10^{-15})$, LRU Mode achieves $p = 1.04 \times 10^{-8}$, and Interaction achieves $p = 2.77 \times 10^{-4}$ ($0.00028$). Partial eta-squared $\eta_p^2 = SS_{\text{effect}} / (SS_{\text{effect}} + SS_{\text{error}})$. While all factors achieve formal statistical significance at $\alpha = 0.001$, LRU Mode and its interaction explain $< 0.1\%$ of total latency variance ($\eta_p^2 \le 0.0008$), confirming that LRU replacement alone cannot prevent direct reclamation cliffs without closed-loop throttling.}
+\end{tablenotes}
+\end{table}

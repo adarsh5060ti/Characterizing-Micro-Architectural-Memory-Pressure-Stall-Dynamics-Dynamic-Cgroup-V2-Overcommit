@@ -1,0 +1,28 @@
+\begin{table*}[t]
+\centering
+\caption{Comparative Cloud Mitigation Performance, Fair Baseline Comparison, and Ablation Analysis at Acute Overcommit ($\Omega = 1.6$, $\beta_{\text{burst}} = 1.00$, MGLRU Linux 6.8 Kernel).}
+\label{tab:mitigation}
+\footnotesize
+\begin{adjustbox}{width=\textwidth}
+\begin{tabular}{lrrrrrrrccc}
+\toprule
+\textbf{Mitigation Policy} & \textbf{P50} & \textbf{P99} & \textbf{P99.9} & \textbf{PSI Some} & \textbf{Scan Eff.} & \textbf{T1 Goodput} & \textbf{T3 Batch} & \textbf{Tail Reduction} & \textbf{Cohen's} $\mathbf{d}$ & \textbf{Tail Cliff's} $\mathbf{\delta_{\text{tail}}}$ \\
+\textbf{/ Controller Configuration} & $\mathbf{(\mu s)}$ & $\mathbf{(\mu s)}$ & $\mathbf{(\mu s)}$ & $\mathbf{(\%)}$ & $\mathbf{\mathcal{E}_{\text{reclaim}}}$ & \textbf{(kOPS)} & \textbf{(MB/s)} & \textbf{vs. Unconstr.} & \textbf{[vs. Uncon.]} & \textbf{[vs. Uncon.]} \\
+\midrule
+Unconstrained (Default) & 24.5 & 12,512.3 & 48,399.5 & 68.42 & 0.285 & 84.2 & 4,171.2 & Baseline & -- & -- \\
+Unconstrained + Static \texttt{memory.min} (32 GB) & 24.2 & 4,820.0 & 18,450.0 & 58.12 & 0.340 & 92.5 & 4,171.2 & $2.6\times$ & $0.38$ & $0.642$ \\
+Kubelet Static Eviction (85\%) \cite{k8s2023eviction} & 23.9 & 421.2 & 3,819.9 & 24.20 & 0.480 & 108.5 & 2,918.4 & $12.7\times$ & $0.72$ & $0.913$ \\
+Static Cgroup \texttt{memory.high} & 24.1 & 3,423.7 & 14,199.8 & 42.10 & 0.360 & 96.4 & 3,427.2 & $3.4\times$ & $0.44$ & $0.584$ \\
+Meta \texttt{oomd} (PSI Threshold) \cite{heo2018oomd} & 23.8 & 1,181.2 & 4,499.9 & 31.50 & 0.420 & 104.2 & 2,452.8 & $10.8\times$ & $0.68$ & $0.857$ \\
+Meta \texttt{Senpai} (Integral Probing) \cite{yang2021senpai} & 23.7 & 340.6 & 1,950.0 & 18.40 & 0.550 & 115.8 & 3,892.8 & $24.8\times$ & $0.88$ & $0.946$ \\
+Meta \texttt{Senpai} + Static \texttt{memory.min} (32 GB) \cite{yang2021senpai} & 23.6 & 94.2 & 312.4 & 11.20 & 0.680 & 118.2 & 3,940.8 & $154.9\times$ & $1.28$ & $0.982$ \\
+PSI-Shed (Phase 1 Only: PDA \texttt{mem.high}) & 23.6 & 210.4 & 1,450.0 & 14.20 & 0.620 & 117.8 & 4,022.4 & $33.4\times$ & $0.96$ & $0.960$ \\
+PSI-Shed (Phase 1+2: + \texttt{MADV\_PAGEOUT}) & 23.5 & 88.0 & 480.0 & 7.80 & 0.710 & 118.9 & 4,137.6 & $100.8\times$ & $1.18$ & $0.980$ \\
+\textbf{PSI-Shed (Full 3-Phase Closed-Loop)} & 23.2 & 54.0 & \textbf{118.0} & 1.82 & 0.840 & 119.8 & 4,159.2 & \textbf{410.2$\times$} & \textbf{1.48} & \textbf{0.987} \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\begin{tablenotes}
+\item \footnotesize{\textit{Note:} Tier 1 KV-store SLA target is $250\ \mu\text{s}$. Tail Reduction Factor is the non-parametric tail quantile ratio $Q_{0.999}(\text{Unconstrained}) / Q_{0.999}(\text{Policy})$. Tail Cliff's $\delta_{\text{tail}}$ measures non-parametric effect size specifically on tail exceedances ($T_{\text{alloc}} > 35\ \mu\text{s}$), where $\delta > 0.474$ designates a large effect. Static \texttt{memory.min} protects Tier 1 from scan victim selection but cannot eliminate allocator queue lock stalls during whole-node memory deficits; only PSI-Shed's active 3-phase closed loop safely clamps P99.9 latency to $118.0\ \mu\text{s}$ ($410.2\times$ tail reduction) while preserving $99.7\%$ of batch throughput.}
+\end{tablenotes}
+\end{table*}

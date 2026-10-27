@@ -1,0 +1,61 @@
+\begin{table*}[t]
+\centering
+\caption{Cloud Multi-Tenant Testbed Hardware Configuration, Linux 6.8 Kernel Parameters, Multi-Tier Workload Specification, and PSI-Shed Controller Hyperparameters.}
+\label{tab:testbed}
+\footnotesize
+\begin{adjustbox}{width=\textwidth}
+\begin{tabular}{ll}
+\toprule
+\textbf{Subsystem / Dimension} & \textbf{Production Testbed and Controller Specification} \\
+\midrule
+\multicolumn{2}{@{}l}{\textbf{Host Hardware \& Micro-Architecture:}} \\
+Processor Model & AMD EPYC 7763 (64 Physical Cores, 128 Threads @ 2.45--3.50 GHz) \\
+Host Physical Memory & 256 GB DDR4-3200 ECC Registered DRAM (2 NUMA Nodes, 128 GB/node) \\
+Container Memory Domain & $M_{\text{DRAM}} = 192\text{ GB}$ allocatable slice (\texttt{mem=192G}; 64 GB host/OS reserved) \\
+NUMA / CPU Affinity & Multi-tenant cgroups bound to Socket 0 (32 cores / 64 threads) \\
+Cache Hierarchy & L1d: 32 KB/core, L2: 512 KB/core, L3: 256 MB shared (32 MB/CCD) \\
+Storage Subsystem & $2\times 3.84$ TB NVMe PCIe Gen4 SSDs (Sustained write: 3.8 GB/s) \\
+Network Interface & Dual-Port Mellanox ConnectX-6 Dx (100 GbE RoCEv2) \\
+\midrule
+\multicolumn{2}{@{}l}{\textbf{Kernel, Paging \& Swap Configuration:}} \\
+Linux Kernel Version & Linux 6.8.4-generic (x86\_64 SMP, PREEMPT\_DYNAMIC, \texttt{mem=192G}) \\
+LRU Reclamation Engines & (1) Multi-Gen LRU (MGLRU: \texttt{lru\_gen=Y, min\_ttl\_ms=1000}) \\
+ & (2) Dual-LRU (\texttt{lru\_gen=N}, Active/Inactive Page Lists) \\
+Pressure Telemetry & Pressure Stall Information (PSI) via \texttt{/proc/pressure/memory} (\texttt{epoll}) \\
+Watermark Thresholds & \texttt{min\_free\_kbytes}=67584, \texttt{watermark\_boost\_factor}=15000 \\
+Direct Reclamation & \texttt{vm.vfs\_cache\_pressure}=100, \texttt{vm.swappiness}=60 \\
+NVMe Swap Partition & 32 GB dedicated partition on PCIe Gen4 NVMe RAID-0 (\texttt{/dev/nvme0n1p2}) \\
+Zswap / Compressed Cache & Disabled (\texttt{zswap.enabled=0}) to isolate physical storage paging latency \\
+Cgroup Watermarks & Dynamic \texttt{memory.min}, \texttt{memory.low}, \texttt{memory.high}, \texttt{memory.max} \\
+\midrule
+\multicolumn{2}{@{}l}{\textbf{Heterogeneous Multi-Tenant Workload Suite:}} \\
+\textbf{Tier 1 (Latency-Critical SLA)} & In-memory Redis-like KV-Store; Zipfian skew $\theta = 0.99$, \\
+ & $1.2\times 10^5$ read/write queries/sec; SLA: P99.9 $\le 250\ \mu\text{s}$; \\
+ & Working Set: 32 GB anonymous pages (\texttt{MAP\_ANONYMOUS}) \\
+\textbf{Tier 2 (Elastic Page-Cache)} & Streaming sequential I/O producer-consumer pipeline; \\
+ & Ring-buffer \texttt{mmap} pages, file-backed cache footprint: 48 GB; \\
+ & Target throughput $\ge 2.5\text{ GB/s}$, tolerates async page-out \\
+\textbf{Tier 3 (Opportunistic Batch)} & Distributed matrix-multiplication \& map-reduce analytics; \\
+ & Bursty Poisson arrivals ($\beta_{\text{burst}} \in [0.15, 1.35]$); \\
+ & Footprint: 64--140 GB elastic anonymous heap (\texttt{MAP\_PRIVATE}) \\
+\midrule
+\multicolumn{2}{@{}l}{\textbf{PSI-Shed Controller Hyperparameters \& Tuning Gains:}} \\
+Control Sampling Interval & $\Delta t = 10\text{ ms}$ (Hybrid: 10~ms \texttt{timerfd} loop + non-blocking \texttt{epoll} priority interrupt) \\
+EWMA Filtering Factor & $\lambda = 0.25$ (attenuates high-frequency sensor noise) \\
+Proportional Pressure Gain & $k_p = 1.20$ \\
+Velocity Pressure Gain & $k_v = 0.45\text{ s}$ \\
+Acceleration Pressure Gain & $k_a = 0.15\text{ s}^2$ \\
+Scan Efficiency Penalty Gain & $k_{\mathcal{E}} = 0.85$ \\
+Baseline Pressure Threshold & $\theta_{\text{base}} = 0.05$ (Normalized fraction, 5.0\% stall time) \\
+Critical Acceleration Limit & $\alpha_{\text{crit}} = 1.20\text{ s}^{-2}$ (Normalized fraction, 120\%/$\text{s}^2$) \\
+Critical Scan Efficiency Limit & $\mathcal{E}_{\text{crit}} = 0.35$ \\
+Error Deadband Margin & $\delta_{\text{deadband}} = 0.02$ (Normalized error threshold $e(t) \in [0, 1]$) \\
+Max Allowable Refault Ratio & $\mathcal{R}_{\text{max}} = 0.05$ (Phase 2 page-out safety trigger) \\
+Lookback Working-Set Window & $W_{\text{win}} = 100\text{ ms}$ (Phase 3 \texttt{memory.min} tracking) \\
+Phase 1 Throttling Gain & $\gamma_{\text{shed}} = 0.08$ (Fast multiplicative decrease) \\
+Phase 1 Additive Recovery & $\rho_{\text{recover}} = 16\text{ MB/s}$ (Slow additive restoration) \\
+Phase 1 Quiescent Hold Dwell & $\tau_{\text{hold}} = 50\text{ ms}$ (5 consecutive quiescent steps; anti-chatter) \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table*}
